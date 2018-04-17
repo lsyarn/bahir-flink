@@ -139,5 +139,16 @@ public class RedisSinkTest extends TestLogger {
         public String getValueFromData(Tuple2<String, String> data) {
             return data.f1;
         }
+
+        /**
+         * Extracts additionalKey from data.
+         *
+         * @param data source data
+         * @return value
+         */
+        @Override
+        public String getAdditionalKeyFromData(Tuple2<String, String> data) {
+            return null;
+        }
     }
 }

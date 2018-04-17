@@ -50,8 +50,8 @@ import java.util.Objects;
  * <p>Example:
  *
  * <pre>
- *{@code
- *public static class RedisExampleMapper implements RedisMapper<Tuple2<String, String>> {
+ * {@code
+ * public static class RedisExampleMapper implements RedisMapper<Tuple2<String, String>> {
  *
  *    private RedisCommand redisCommand;
  *
@@ -67,11 +67,11 @@ import java.util.Objects;
  *    public String getValueFromData(Tuple2<String, String> data) {
  *        return data.f1;
  *    }
- *}
- *JedisPoolConfig jedisPoolConfig = new JedisPoolConfig.Builder()
+ * }
+ * JedisPoolConfig jedisPoolConfig = new JedisPoolConfig.Builder()
  *    .setHost(REDIS_HOST).setPort(REDIS_PORT).build();
- *new RedisSink<String>(jedisPoolConfig, new RedisExampleMapper(RedisCommand.LPUSH));
- *}</pre>
+ * new RedisSink<String>(jedisPoolConfig, new RedisExampleMapper(RedisCommand.LPUSH));
+ * }</pre>
  *
  * @param <IN> Type of the elements emitted by this sink
  */
@@ -101,7 +101,7 @@ public class RedisSink<IN> extends RichSinkFunction<IN> {
      * Creates a new {@link RedisSink} that connects to the Redis server.
      *
      * @param flinkJedisConfigBase The configuration of {@link FlinkJedisConfigBase}
-     * @param redisSinkMapper This is used to generate Redis command and key value from incoming elements.
+     * @param redisSinkMapper      This is used to generate Redis command and key value from incoming elements.
      */
     public RedisSink(FlinkJedisConfigBase flinkJedisConfigBase, RedisMapper<IN> redisSinkMapper) {
         Objects.requireNonNull(flinkJedisConfigBase, "Redis connection pool config should not be null");
@@ -128,7 +128,10 @@ public class RedisSink<IN> extends RichSinkFunction<IN> {
     public void invoke(IN input) throws Exception {
         String key = redisSinkMapper.getKeyFromData(input);
         String value = redisSinkMapper.getValueFromData(input);
-
+        String additionalKey = redisSinkMapper.getAdditionalKeyFromData(input);
+        if (this.additionalKey == null) {
+            this.additionalKey = additionalKey;
+        }
         switch (redisCommand) {
             case RPUSH:
                 this.redisCommandsContainer.rpush(key, value);
@@ -180,6 +183,7 @@ public class RedisSink<IN> extends RichSinkFunction<IN> {
 
     /**
      * Closes commands container.
+     *
      * @throws IOException if command container is unable to close.
      */
     @Override

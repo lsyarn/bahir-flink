@@ -24,7 +24,7 @@ import java.io.Serializable;
  * Function that creates the description how the input data should be mapped to redis type.
  *<p>Example:
  *<pre>{@code
- *private static class RedisTestMapper implements RedisMapper<Tuple2<String, String>> {
+ *private static class RedisTestMapper implements RedisMapper<Tuple3<String, String, String>> {
  *    public RedisDataTypeDescription getCommandDescription() {
  *        return new RedisDataTypeDescription(RedisCommand.PUBLISH);
  *    }
@@ -33,6 +33,9 @@ import java.io.Serializable;
  *    }
  *    public String getValueFromData(Tuple2<String, String> data) {
  *        return data.f1;
+ *    }
+ *    public String getValueFromData(Tuple2<String, String> data) {
+ *       return data.f2;
  *    }
  *}
  *}</pre>
@@ -63,4 +66,12 @@ public interface RedisMapper<T> extends Function, Serializable {
      * @return value
      */
     String getValueFromData(T data);
+
+    /**
+     * Extracts additionalKey from data.
+     *
+     * @param data source data
+     * @return value
+     */
+    String getAdditionalKeyFromData(T data);
 }
