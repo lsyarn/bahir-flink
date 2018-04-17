@@ -55,13 +55,6 @@ public class RedisCommandDescription implements Serializable {
         Objects.requireNonNull(redisCommand, "Redis command type can not be null");
         this.redisCommand = redisCommand;
         this.additionalKey = additionalKey;
-
-        if (redisCommand.getRedisDataType() == RedisDataType.HASH ||
-            redisCommand.getRedisDataType() == RedisDataType.SORTED_SET) {
-            if (additionalKey == null) {
-                throw new IllegalArgumentException("Hash and Sorted Set should have additional key");
-            }
-        }
     }
 
     /**
